@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: ai-call-summarizer
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/calls}
+    username: ${DB_USER:calls}
+    password: ${DB_PASSWORD:calls}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  threads:
+    virtual:
+      enabled: true   # @Async work runs on Java 21 virtual threads
+
+llm:
+  base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+  api-key: ${LLM_API_KEY:}
+  model: ${LLM_MODEL:gpt-4o-mini}
+  timeout-ms: 30000
+
+analysis:
+  max-attempts: 3
+  retry-interval-ms: 60000
+
+rubric:
+  criteria:
+    - name: Rapport
+      description: Builds trust early; uses the customer's name; friendly, confident tone.
+    - name: Discovery
+      description: Asks open questions about household, assets, current coverage and budget.
+    - name: Value
+      description: Explains coverage in plain language tied to what the customer said they need.
+    - name: Objection Handling
+      description: Acknowledges concerns (price, timing, switching) and answers them without pressure.
+    - name: Close
+      description: Asks for the sale or sets a specific next step with a date and time.
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
